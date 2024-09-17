@@ -1,0 +1,5 @@
+.idea
+.DS_Store
+
+charts/**/charts
+values.override.yaml
