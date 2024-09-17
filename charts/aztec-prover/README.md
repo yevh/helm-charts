@@ -1,12 +1,12 @@
 # aztec-prover
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
-A Helm chart for Kubernetes
+Aztec Prover Node and Prover Agent Helm Chart
 
 **Homepage:** <https://nethermindeth.github.io/helm-charts>
 
-## installation
+## Installation
 
 ```bash
 helm repo add nethermind https://nethermindeth.github.io/helm-charts
