@@ -73,14 +73,14 @@ proverAgent:
     #  Optional URL for pushing telemetry data to a remote OpenTelemetry data collector.
     # OTEL_EXPORTER_OTLP_ENDPOINT: ""
 
-extraObjects:
-  []
-  # - apiVersion: v1
-  #   kind: Secret
-  #   metadata:
-  #     name: '{{ include "aztec-prover.fullname" . }}'
-  #   stringData:
-  #     PROVER_PUBLISHER_PRIVATE_KEY: "<PRIVATE KEY>"
+# Extra manifests
+extraObjects: []
+# - apiVersion: v1
+#   kind: Secret
+#   metadata:
+#     name: '{{ include "aztec-prover.fullname" . }}'
+#   stringData:
+#     PROVER_PUBLISHER_PRIVATE_KEY: "<PRIVATE KEY>"
 
 envFrom:
   []
