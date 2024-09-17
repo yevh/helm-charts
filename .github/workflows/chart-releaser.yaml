@@ -52,5 +52,5 @@ jobs:
         run: |
           helm registry login nethermind.jfrog.io --username ${{ secrets.ARTIFACTORY_ANGKOR_USERNAME }} --password ${{ secrets.ARTIFACTORY_ANGKOR_TOKEN_CONTRIBUTOR }}
           for chart in .cr-release-packages/*.tgz; do
-            helm push "$chart" nethermind.jfrog.io/angkor-helmoci-local
+            helm push "$chart" oci://nethermind.jfrog.io/angkor-helmoci-local
           done
