@@ -3,3 +3,4 @@
 
 charts/**/charts
 values.override.yaml
+.cr-release-packages
