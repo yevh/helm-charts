@@ -21,7 +21,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Run helm-docs
-        run: docker run --rm --volume "$(pwd):/helm-docs" -u "$(id -u)" jnorwood/helm-docs:v1.14.2
+        run: docker run --rm -v $(pwd):/helm-docs jnorwood/helm-docs:latest --chart-search-root=charts --template-files=./_templates.gotmpl --template-files=README.md.gotmpl
 
       - name: Commit & Push changes
         uses: actions-js/push@master
