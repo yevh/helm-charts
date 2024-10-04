@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "erpc.fullname" . }}
+  labels:
+    {{- include "erpc.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "erpc.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "erpc.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "erpc.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-erpc-config
+          image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+          imagePullPolicy: {{ .Values.initImage.pullPolicy }}
+          {{- if .Values.erpc.config.database }}
+          {{- with .Values.erpc.config.database.evmJsonRpcCache }}
+          {{- if eq .driver "redis" }}
+          env:
+            - name: ERPC_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .redis.password.secret.name }}
+                  key: {{ .redis.password.secret.key }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.erpc.secret.name }}
+          command:
+            - /bin/bash
+            - /scripts/init.sh
+            - /templates/erpc.yaml
+            - /etc/erpc/erpc.yaml
+          volumeMounts:
+            - name: erpc-config
+              mountPath: /etc/erpc
+            - name: erpc-config-template
+              mountPath: /templates
+            - name: erpc-config-init-script
+              mountPath: /scripts
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /root/erpc-server
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ .Values.service.metricsPort }}
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: erpc-config
+              mountPath: /root/erpc.yaml
+              subPath: erpc.yaml
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        - name: erpc-config
+          emptyDir: {}
+        - name: erpc-config-template
+          configMap:
+            name: {{ include "erpc.configTemplateName" . }}
+        - name: erpc-config-init-script
+          configMap:
+            name: {{ include "erpc.initConfigScriptName" . }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
