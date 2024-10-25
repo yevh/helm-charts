@@ -1,6 +1,6 @@
 # Helm Charts
 
-The list of helm charts maintained and further developed by Nethermind team. Every chart is located in a separate folder and has the configuration parameters located in `values.yaml` file.
+The list of helm charts maintained and further developed by Nethermind team. Every chart is located in a separate folder and has the configuration parameters located in `values.yaml` file. 
 
 ## Usage
 
