@@ -21,6 +21,7 @@ jobs:
           TRIVY_SKIP_FILES: "charts/*/values.yaml,charts/*/values.*.yaml,charts/*/Chart.yaml"
           TRIVY_HELM_SET: "espresso.ESPRESSO_SEQUENCER_L1_PROVIDER=dummy,espresso.ESPRESSO_SEQUENCER_API_PORT=80"
           TRIVY_HELM_SKIP_TEST: "true"
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db
         with:
           scan-type: 'config'
           scan-ref: './charts/**/templates/'
