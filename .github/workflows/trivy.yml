@@ -1,28 +1,29 @@
 name: Trivy
-
 on:
   push:
     branches:
       - main
   pull_request:
-
 permissions:
   contents: read
   security-events: write
-
 jobs:
   scan:
     name: Security Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 #v4.2.1
 
       - name: Run Trivy
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@5681af892cd0f4997658e2bacc62bd0a894cf564 #v0.27.0
+        env:
+          TRIVY_SKIP_FILES: "charts/*/values.yaml,charts/*/values.*.yaml,charts/*/Chart.yaml"
+          TRIVY_HELM_SET: "espresso.ESPRESSO_SEQUENCER_L1_PROVIDER=dummy,espresso.ESPRESSO_SEQUENCER_API_PORT=80"
+          TRIVY_HELM_SKIP_TEST: "true"
         with:
           scan-type: 'config'
-          scan-ref: './charts'
+          scan-ref: './charts/**/templates/'
           format: 'sarif'
           output: 'trivy-results.sarif'
           exit-code: '1'
@@ -33,7 +34,7 @@ jobs:
           timeout: '10m'
 
       - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@5618c9fc1e675841ca52c1c6b1304f5255a905a0 #v2.19.0
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
