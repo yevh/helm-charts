@@ -1,0 +1,15 @@
+misconfiguration:
+  helm:
+    template:
+      skip: true
+
+scan:
+  skip-files:
+    - "values.yaml"
+    - "values.*.yaml"
+    - "Chart.yaml"
+    - "charts/*"
+  
+  file-patterns:
+    - "*.yaml"
+    - "*.yml"
